@@ -67,11 +67,14 @@ void drawScene() {
 }
 
 int main(int argc, char** argv) {
-  /* Open up the model */
+  /* Check the args and open up the model */
   if (argc == 2) {
     std::string fileName(argv[1]);
     mesh = new Model(fileName);
     mesh->myPrint();
+  } else {
+    cout << "Please enter an .obj file to be drawn." << endl;
+    exit(0);
   }
 
 	//Initialize GLUT
