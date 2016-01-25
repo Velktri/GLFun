@@ -20,6 +20,12 @@ struct vector3D {
   float z;
 };
 
+struct FaceData {
+  int vertexPoint;
+  int vertexTexture;
+  int vertexNormal;
+};
+
 class Model {
   
   public:
@@ -31,13 +37,17 @@ public:
   
   string meshName;
   vector<vector3D> vertexArray;
+  vector<FaceData> faceArray;
+
   void myPrint();
-  vector<vector3D> getVertices();  
+  vector<vector3D> getVertices();
+  vector<FaceData> getFaces();
 
 private:
   void parseMesh(string fileName);
   string parseName(string line);
   vector3D parseVertex(string line);
+  FaceData parseFace(string line);
   vector<string> split(const string &s, char delim);
 };
 #endif

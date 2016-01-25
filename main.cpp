@@ -51,8 +51,12 @@ void drawScene() {
 	glBegin(GL_QUADS); //Begin quadrilateral coordinates
 	
   vector<vector3D> vertexArray = mesh->getVertices();
-  for (unsigned int i = 0; i < vertexArray.size(); i++) {
-    glVertex3f(vertexArray.at(i).x, vertexArray.at(i).y, vertexArray.at(i).z);
+  vector<FaceData> faceArray = mesh->getFaces();
+  for (unsigned int i = 0; i < faceArray.size(); i++) {
+  	for (int j = 0; j < face; ++j)
+  	{
+	  glVertex3f(vertexArray.at(faceArray.at(i).vertexPoint).x, vertexArray.at(faceArray.at(i).vertexPoint).y, vertexArray.at(faceArray.at(i).vertexPoint).z);
+  	}
     cout << vertexArray.at(i).x << " " << vertexArray.at(i).y << " " << vertexArray.at(i).z << endl;
   }
 	/* Trapezoid
@@ -60,9 +64,9 @@ void drawScene() {
 	glVertex3f(0.7f, -1.5f, -5.0f);
 	glVertex3f(0.4f, -0.5f, -5.0f);
 	glVertex3f(-0.4f, -0.5f, -5.0f); */
-	
+
 	glEnd(); //End quadrilateral coordinates
-	
+
   glutSwapBuffers(); //Send the 3D scene to the screen
 }
 
@@ -71,7 +75,6 @@ int main(int argc, char** argv) {
   if (argc == 2) {
     std::string fileName(argv[1]);
     mesh = new Model(fileName);
-    mesh->myPrint();
   } else {
     cout << "Please enter an .obj file to be drawn." << endl;
     exit(0);

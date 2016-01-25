@@ -16,10 +16,11 @@ void Model::parseMesh(string fileName) {
       if (line.at(0) == 'o') {
         meshName = parseName(line);
       } else if (line.at(0) == 'v') {
-        vertexArray.push_back(parseVertex(line));     
+        vertexArray.push_back(parseVertex(line));
+      } else if (line.at(0) == 'f') {
+        faceArray.push_back(parseFace(line));
       }
     }
-    
   }
   myFile.close();
 }
@@ -30,6 +31,10 @@ void Model::myPrint() {
 
 vector<vector3D> Model::getVertices() {
   return vertexArray;
+}
+
+vector<FaceData> Model::getFaces() {
+  return faceArray;
 }
 
 string Model::parseName(string line) {
@@ -45,11 +50,28 @@ vector3D Model::parseVertex(string line) {
   vector3D point;
   vector<string> elements = split(line, ' ');
   point.x = atof(elements[1].c_str()) / 5;
-  point.y = atof(elements[2].c_str()) / 5;   
-  point.z = (atof(elements[3].c_str()) / 5) - 3.0; 
-  elements.clear();  
+  point.y = atof(elements[2].c_str()) / 5;
+  point.z = (atof(elements[3].c_str()) / 5) - 3.0;
+  elements.clear();
 
   return point;
+}
+
+FaceData Model::parseFace(string line) {
+  vector<FaceData> face;
+  vector<string> subElement;
+  vector<string> elements = split(line, ' ');
+  for (unsigned int i = 1; i < elements.size(); ++i)
+  {
+    subElement = split(elements[i], '/');
+    face.vertexPoint = atoi(subElement[0].c_str());
+    face.vertexTexture = atoi(subElement[1].c_str());
+    face.vertexNormal = atoi(subElement[2].c_str());
+  }
+  subElement.clear();
+  elements.clear();
+
+  return face;
 }
 
 vector<string> Model::split(const string &s, char delim) {
