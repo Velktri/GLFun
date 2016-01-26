@@ -9,6 +9,7 @@
 #endif
 
 Model* mesh;
+float _angle = 0.0f;
 
 //Called when a key is pressed
 void handleKeypress(unsigned char key, //The key that was pressed
@@ -47,27 +48,35 @@ void drawScene() {
 	
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
-	
+	glTranslatef(0.0f, 0.0f, -10.0f);
+	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
 	glBegin(GL_QUADS); //Begin quadrilateral coordinates
 	
-  vector<vector3D> vertexArray = mesh->getVertices();
-  vector<FaceData> faceArray = mesh->getFaces();
-  for (unsigned int i = 0; i < faceArray.size(); i++) {
-  	for (int j = 0; j < face; ++j)
-  	{
-	  glVertex3f(vertexArray.at(faceArray.at(i).vertexPoint).x, vertexArray.at(faceArray.at(i).vertexPoint).y, vertexArray.at(faceArray.at(i).vertexPoint).z);
-  	}
-    cout << vertexArray.at(i).x << " " << vertexArray.at(i).y << " " << vertexArray.at(i).z << endl;
-  }
-	/* Trapezoid
-	glVertex3f(-0.7f, -1.5f, -5.0f);
-	glVertex3f(0.7f, -1.5f, -5.0f);
-	glVertex3f(0.4f, -0.5f, -5.0f);
-	glVertex3f(-0.4f, -0.5f, -5.0f); */
+	vector<vector3D> vertexArray = mesh->getVertices();
+	vector<FaceData> faceArray = mesh->getFaces();
 
+	for (unsigned int i = 0; i < faceArray.size(); i++) {
+		int faceSize = faceArray.at(0).vertexPoint.size();
+		for (int j = 0; j < faceSize; ++j) {
+			glVertex3f(vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).x, 
+					   vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).y, 
+					   vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).z);
+		}
+	}
 	glEnd(); //End quadrilateral coordinates
+	glutSwapBuffers(); //Send the 3D scene to the screen
+}
 
-  glutSwapBuffers(); //Send the 3D scene to the screen
+void update(int value) {
+    _angle += 2.0f;
+    if (_angle > 360) {
+        _angle -= 360;
+    }
+    
+    glutPostRedisplay(); //Tell GLUT that the scene has changed
+    
+    //Tell GLUT to call update again in 25 milliseconds
+    glutTimerFunc(25, update, 0);
 }
 
 int main(int argc, char** argv) {
@@ -94,6 +103,8 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	
+	glutTimerFunc(25, update, 0); //Add a timer
+
 	glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
 	return 0; //This line is never reached
 }

@@ -21,9 +21,9 @@ struct vector3D {
 };
 
 struct FaceData {
-  int vertexPoint;
-  int vertexTexture;
-  int vertexNormal;
+  vector<int> vertexPoint;
+  vector<int> vertexTexture;
+  vector<int> vertexNormal;
 };
 
 class Model {
@@ -34,7 +34,7 @@ class Model {
 public:
   Model(string fileName); 
   ~Model();
-  
+
   string meshName;
   vector<vector3D> vertexArray;
   vector<FaceData> faceArray;
