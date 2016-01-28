@@ -18,7 +18,15 @@ void Model::parseMesh(string fileName) {
       } else if (line.at(0) == 'v' && line.at(1) == ' ') {
         vertexArray.push_back(parseVertex(line));
       } else if (line.at(0) == 'f') {
-        faceArray.push_back(parseFace(line));
+        vector<string> elements = split(line, ' ');
+        if ((elements.size() - 1) == 4) {
+          quadArray.push_back(parseFace(elements));
+        } else if ((elements.size() - 1) == 3) {
+          triArray.push_back(parseFace(elements));
+        }
+        elements.clear();
+      } else {
+        // N-Gons
       }
     }
   }
@@ -33,8 +41,12 @@ vector<vector3D> Model::getVertices() {
   return vertexArray;
 }
 
-vector<FaceData> Model::getFaces() {
-  return faceArray;
+vector<FaceData> Model::getQuads() {
+  return quadArray;
+}
+
+vector<FaceData> Model::getTris() {
+  return triArray;
 }
 
 string Model::parseName(string line) {
@@ -57,21 +69,19 @@ vector3D Model::parseVertex(string line) {
   return point;
 }
 
-FaceData Model::parseFace(string line) {
-  FaceData face;
+FaceData Model::parseFace(vector<string> elements) {
+  FaceData quad;
   vector<string> subElement;
-  vector<string> elements = split(line, ' ');
   for (unsigned int i = 1; i < elements.size(); ++i)
   {
     subElement = split(elements[i], '/');
-    face.vertexPoint.push_back(atoi(subElement[0].c_str()));
-    face.vertexTexture.push_back(atoi(subElement[1].c_str()));
-    face.vertexNormal.push_back(atoi(subElement[2].c_str()));
+    quad.vertexPoint.push_back(atoi(subElement[0].c_str()));
+    quad.vertexTexture.push_back(atoi(subElement[1].c_str()));
+    quad.vertexNormal.push_back(atoi(subElement[2].c_str()));
   }
   subElement.clear();
-  elements.clear();
 
-  return face;
+  return quad;
 }
 
 vector<string> Model::split(const string &s, char delim) {

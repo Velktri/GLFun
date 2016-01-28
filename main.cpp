@@ -48,27 +48,46 @@ void drawScene() {
 	
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
-	glTranslatef(0.0f, 0.0f, -10.0f);
-	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
-	glBegin(GL_QUADS); //Begin quadrilateral coordinates
-	
-	vector<vector3D> vertexArray = mesh->getVertices();
-	vector<FaceData> faceArray = mesh->getFaces();
+	glTranslatef(0.0f, 0.0f, -2.0f);
 
-	for (unsigned int i = 0; i < faceArray.size(); i++) {
-		int faceSize = faceArray.at(0).vertexPoint.size();
-		for (int j = 0; j < faceSize; ++j) {
-			glVertex3f(vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).x, 
-					   vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).y, 
-					   vertexArray.at(faceArray.at(i).vertexPoint.at(j) - 1).z);
+	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
+
+	vector<vector3D> vertexArray = mesh->getVertices();
+
+	/* Draw all the mesh's quads */
+	glBegin(GL_QUADS);
+	vector<FaceData> quadArray = mesh->getQuads();
+	for (unsigned int i = 0; i < quadArray.size(); i++) {
+		int quadSize = quadArray.at(0).vertexPoint.size();
+		for (int j = 0; j < quadSize; ++j) {
+			glVertex3f(vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).x, 
+					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).y, 
+					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).z);
 		}
 	}
-	glEnd(); //End quadrilateral coordinates
+	glEnd();
+
+	/* Draw all the mesh's triangles */
+	vector<FaceData> triArray = mesh->getTris();
+	glBegin(GL_TRIANGLES);
+	for (unsigned int i = 0; i < triArray.size(); i++) {
+		int triSize = triArray.at(0).vertexPoint.size();
+		for (int j = 0; j < triSize; ++j) {
+			glVertex3f(vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).x, 
+					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).y, 
+					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).z);
+		}
+	}
+	glEnd();
+	vertexArray.close;
+	quadArray.close;
+	triArray.close;
+
 	glutSwapBuffers(); //Send the 3D scene to the screen
 }
 
 void update(int value) {
-    _angle += 2.0f;
+    /*_angle += 2.0f;
     if (_angle > 360) {
         _angle -= 360;
     }
@@ -76,7 +95,7 @@ void update(int value) {
     glutPostRedisplay(); //Tell GLUT that the scene has changed
     
     //Tell GLUT to call update again in 25 milliseconds
-    glutTimerFunc(25, update, 0);
+    glutTimerFunc(25, update, 0);*/
 }
 
 int main(int argc, char** argv) {

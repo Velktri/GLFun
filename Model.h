@@ -27,9 +27,6 @@ struct FaceData {
 };
 
 class Model {
-  
-  public:
-    // string name here
 
 public:
   Model(string fileName); 
@@ -37,17 +34,19 @@ public:
 
   string meshName;
   vector<vector3D> vertexArray;
-  vector<FaceData> faceArray;
+  vector<FaceData> quadArray;
+  vector<FaceData> triArray;
 
   void myPrint();
   vector<vector3D> getVertices();
-  vector<FaceData> getFaces();
+  vector<FaceData> getQuads();
+  vector<FaceData> getTris();
 
 private:
   void parseMesh(string fileName);
   string parseName(string line);
   vector3D parseVertex(string line);
-  FaceData parseFace(string line);
+  FaceData parseFace(vector<string> elements);
   vector<string> split(const string &s, char delim);
 };
 #endif
