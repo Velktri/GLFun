@@ -79,9 +79,9 @@ void drawScene() {
 		}
 	}
 	glEnd();
-	vertexArray.close;
-	quadArray.close;
-	triArray.close;
+	vertexArray.clear();
+	quadArray.clear();
+	triArray.clear();
 
 	glutSwapBuffers(); //Send the 3D scene to the screen
 }
