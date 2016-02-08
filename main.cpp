@@ -48,7 +48,7 @@ void drawScene() {
 	
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
-	glTranslatef(0.0f, 0.0f, -2.0f);
+	glTranslatef(0.0f, 0.0f, -5.0f);
 
 	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
 
@@ -87,7 +87,7 @@ void drawScene() {
 }
 
 void update(int value) {
-    /*_angle += 2.0f;
+    _angle += 2.0f;
     if (_angle > 360) {
         _angle -= 360;
     }
@@ -95,7 +95,7 @@ void update(int value) {
     glutPostRedisplay(); //Tell GLUT that the scene has changed
     
     //Tell GLUT to call update again in 25 milliseconds
-    glutTimerFunc(25, update, 0);*/
+    glutTimerFunc(25, update, 0);
 }
 
 int main(int argc, char** argv) {
