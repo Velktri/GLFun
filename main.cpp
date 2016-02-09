@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Camera.h"
 
 //Include OpenGL header files, so that we can use OpenGL
 #ifdef __APPLE__
@@ -9,14 +10,19 @@
 #endif
 
 Model* mesh;
+Camera* userCamera;
 float _angle = 0.0f;
 
 //Called when a key is pressed
 void handleKeypress(unsigned char key, //The key that was pressed
 					int x, int y) {    //The current mouse coordinates
-	switch (key) {
-		case 27: //Escape key
-			exit(0); //Exit the program
+
+	if (key == 'w') {
+		userCamera->translate(1.0f, 0.0f, 0.0f);
+	} else if (key == 's') {
+		userCamera->translate(-1.0f, 0.0f, 0.0f);
+	} else if (key == 27) {
+		exit(0);
 	}
 }
 
@@ -48,8 +54,11 @@ void drawScene() {
 	
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
-	glTranslatef(0.0f, 0.0f, -5.0f);
 
+	CameraT userPos = userCamera->getCameraPos();
+	glTranslatef(userPos.x, userPos.y, userPos.z);
+
+	//CameraR userRot = userCamera->getCameraRot();
 	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
 
 	vector<vector3D> vertexArray = mesh->getVertices();
@@ -108,6 +117,8 @@ int main(int argc, char** argv) {
     exit(0);
   }
 
+  userCamera = new Camera(0.0f, 0.0f, -5.0f, 0.0f, 0.0f, 0.0f);
+
 	//Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -124,6 +135,6 @@ int main(int argc, char** argv) {
 	
 	glutTimerFunc(25, update, 0); //Add a timer
 
-	glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
-	return 0; //This line is never reached
+	glutMainLoop();
+	return 0;
 }
