@@ -17,10 +17,23 @@ float _angle = 0.0f;
 void handleKeypress(unsigned char key, //The key that was pressed
 					int x, int y) {    //The current mouse coordinates
 
-	if (key == 'w') {
+	/* Primative camera movements */
+	cout << key << flush;
+	if (key == 'e') {
+		userCamera->translate(0.0f, 1.0f, 0.0f);
+	} else if (key == 'q') {
+		userCamera->translate(0.0f, -1.0f, 0.0f);
+	} else if (key == 'a') {
 		userCamera->translate(1.0f, 0.0f, 0.0f);
-	} else if (key == 's') {
+	} else if (key == 'd') {
 		userCamera->translate(-1.0f, 0.0f, 0.0f);
+
+	/* Camera Scaling */
+	} else if (key == 'w') {
+		userCamera->translate(0.0f, 0.0f, 1.0f);
+	} else if (key == 's') {
+		userCamera->translate(0.0f, 0.0f, -1.0f);
+
 	} else if (key == 27) {
 		exit(0);
 	}
@@ -96,10 +109,10 @@ void drawScene() {
 }
 
 void update(int value) {
-    _angle += 2.0f;
+   /* _angle += 2.0f;
     if (_angle > 360) {
         _angle -= 360;
-    }
+    }*/
     
     glutPostRedisplay(); //Tell GLUT that the scene has changed
     
