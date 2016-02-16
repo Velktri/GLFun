@@ -1,6 +1,10 @@
 #include "Model.h"
 #include "Camera.h"
 
+// GLEW
+#define GLEW_STATIC
+#include <GL/glew.h>
+
 //Include OpenGL header files, so that we can use OpenGL
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
@@ -9,16 +13,26 @@
 #include <GL/glut.h>
 #endif
 
+#define MOUSE_BUTTON_PRESSED    0
+#define MOUSE_BUTTON_UNPRESSED  1
+
+#define GLUT_LEFT_MOUSE    0
+#define GLUT_MIDDLE_MOUSE  1
+#define GLUT_RIGHT_MOUSE   2
+#define GLUT_WHEEL_UP      3
+#define GLUT_WHEEL_DOWN    4
+
+
 Model* mesh;
 Camera* userCamera;
 float _angle = 0.0f;
+int x_pressed = 0;
+int y_pressed = 0;
+int buttonPressed = -1;
 
-//Called when a key is pressed
-void handleKeypress(unsigned char key, //The key that was pressed
-					int x, int y) {    //The current mouse coordinates
-
+/* Handles all key presses */
+void handleKeypress(unsigned char key, int x, int y) {
 	/* Primative camera movements */
-	cout << key << flush;
 	if (key == 'e') {
 		userCamera->translate(0.0f, 1.0f, 0.0f);
 	} else if (key == 'q') {
@@ -27,16 +41,47 @@ void handleKeypress(unsigned char key, //The key that was pressed
 		userCamera->translate(1.0f, 0.0f, 0.0f);
 	} else if (key == 'd') {
 		userCamera->translate(-1.0f, 0.0f, 0.0f);
-
-	/* Camera Scaling */
-	} else if (key == 'w') {
-		userCamera->translate(0.0f, 0.0f, 1.0f);
-	} else if (key == 's') {
-		userCamera->translate(0.0f, 0.0f, -1.0f);
-
-	} else if (key == 27) {
-		exit(0);
 	}
+}
+
+/*  Handles all mouse functionality */
+void processMouse(int button, int state, int x, int y) {
+
+	if (state == MOUSE_BUTTON_PRESSED) {
+		/* Camera Scaling */
+		if (button == GLUT_WHEEL_UP) {
+			userCamera->translate(0.0f, 0.0f, 1.0f);
+		} else if(button == GLUT_WHEEL_DOWN) {
+			userCamera->translate(0.0f, 0.0f, -1.0f);
+		}
+
+		/* Camera Movement */
+		if (button == GLUT_LEFT_MOUSE) {
+			buttonPressed = GLUT_LEFT_MOUSE;
+			x_pressed = x;
+			y_pressed = y;
+		} else if (button == GLUT_MIDDLE_MOUSE) {
+			buttonPressed = GLUT_MIDDLE_MOUSE;
+			x_pressed = x;
+			y_pressed = y;
+		}
+	}
+}
+
+/* Handles all motion when a mouse buttun is pressed */
+void processMotion(int x, int y) {
+	if (buttonPressed == GLUT_LEFT_MOUSE) {
+		int dx = x - x_pressed;
+		int dy = y - y_pressed;
+		cout << dx << " " << dy << endl;
+		userCamera->pan(dx, dy);
+	} else if (buttonPressed == GLUT_MIDDLE_MOUSE) {
+		int dx = x - x_pressed;
+		int dy = y - y_pressed;
+		userCamera->orbit(dx, dy);
+	}
+	x_pressed = x;
+	y_pressed = y;
 }
 
 //Initializes 3D rendering
@@ -68,7 +113,7 @@ void drawScene() {
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
 
-	CameraT userPos = userCamera->getCameraPos();
+	vector3D userPos = userCamera->getCameraPos();
 	glTranslatef(userPos.x, userPos.y, userPos.z);
 
 	//CameraR userRot = userCamera->getCameraRot();
@@ -121,16 +166,20 @@ void update(int value) {
 }
 
 int main(int argc, char** argv) {
-  /* Check the args and open up the model */
-  if (argc == 2) {
-    std::string fileName(argv[1]);
-    mesh = new Model(fileName);
-  } else {
-    cout << "Please enter an .obj file to be drawn." << endl;
-    exit(0);
-  }
+	/* Check the args and open up the model */
+	if (argc == 2) {
+		std::string fileName(argv[1]);
+		mesh = new Model(fileName);
+	} else {
+		cout << "Please enter an .obj file to be drawn." << endl;
+		exit(0);
+	}
 
-  userCamera = new Camera(0.0f, 0.0f, -5.0f, 0.0f, 0.0f, 0.0f);
+	/* Main camera for the user */
+	userCamera = new Camera(0.0f, 0.0f, -5.0f,
+							0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 0.0f);
+
 
 	//Initialize GLUT
 	glutInit(&argc, argv);
@@ -140,13 +189,25 @@ int main(int argc, char** argv) {
 	//Create the window
 	glutCreateWindow("My OBJ Viewer");
 	initRendering(); //Initialize rendering
-	
-	//Set handler functions for drawing, keypresses, and window resizes
 	glutDisplayFunc(drawScene);
+
+	/* Set handler functions keypresses and mouse */
 	glutKeyboardFunc(handleKeypress);
+	glutMouseFunc(processMouse);
+	glutMotionFunc(processMotion);
+
+	/* Handles resizing of the window */
 	glutReshapeFunc(handleResize);
 	
 	glutTimerFunc(25, update, 0); //Add a timer
+
+	/* Initialize GLEW */
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
+	{
+	    cout << "Failed to initialize GLEW" << endl;
+	    return -1;
+	}
 
 	glutMainLoop();
 	return 0;

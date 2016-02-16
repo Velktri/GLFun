@@ -12,13 +12,8 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include "utils.h"
 using namespace std;
-
-struct vector3D {
-  float x;
-  float y;
-  float z;
-};
 
 struct FaceData {
   vector<int> vertexPoint;

@@ -6,7 +6,7 @@ SRCS = main.cpp Model.cpp Camera.cpp
 ifeq ($(shell uname),Darwin)
 	LIBS = -framework OpenGL -framework GLUT
 else
-	LIBS = -lGL -lglut -lGLU
+	LIBS = -lGL -lGLEW -lglut -lGLU
 endif
 
 all: $(PROG)

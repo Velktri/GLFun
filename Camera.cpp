@@ -1,7 +1,8 @@
 #include "Camera.h"
 
 Camera::Camera(float transX, float transY, float transZ,
-			   float rotX, float rotY, float rotZ) {
+			   float rotX, float rotY, float rotZ,
+			   float focusX, float focusY, float focusZ) {
 
 	coodT.x = transX;
 	coodT.y = transY;
@@ -11,6 +12,10 @@ Camera::Camera(float transX, float transY, float transZ,
 	coodR.y = rotY;
 	coodR.z = rotZ;
 
+	/* Focus point for camera */
+	focusT.x = focusX;
+	focusT.y = focusY;
+	focusT.z = focusZ;
 }
 
 Camera::~Camera() {
@@ -29,11 +34,24 @@ void Camera::rotate(float X, float Y, float Z) {
 	coodR.z += Z;
 }
 
-CameraT Camera::getCameraPos() {
+void Camera::pan(int deltaX, int deltaY) {
+
+}
+
+void Camera::orbit(int deltaX, int deltaY) {
+	float focusDist = this->getDistance();
+
+}
+
+float Camera::getDistance() {
+	return sqrt(pow((coodT.x + focusT.x), 2) + pow((coodT.y + focusT.y), 2) + pow((coodT.z + focusT.z), 2));
+}
+
+/* Getters */
+vector3D Camera::getCameraPos() {
 	return coodT;
 }
 
-CameraR Camera::getCameraRot() {
+vector3D Camera::getCameraRot() {
 	return coodR;
 }
-

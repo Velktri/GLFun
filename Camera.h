@@ -1,40 +1,36 @@
 /*  Geoffrey Murray
  *  This class controls the 
- *  main apllication camera.
+ *  main application camera.
  */
 
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <stdlib.h>
+#include "utils.h"
+#include <iostream>
 using namespace std;
-
-struct CameraT {
-	float x;
-	float y;
-	float z;
-};
-
-struct CameraR {
-	float x;
-	float y;
-	float z;
-};
 
 class Camera {
 private:
-	CameraT coodT;
-	CameraR coodR;
+	vector3D coodT;
+	vector3D coodR;
+	vector3D focusT;
+
+	float getDistance();
 
 public:
   Camera(float transX, float transY, float transZ,
-  		 float rotX, float rotY, float rotZ);
+  		 float rotX, float rotY, float rotZ,
+		 float focusX, float focusY, float focusZ);
   ~Camera();
 
   void translate(float X, float Y, float Z);
   void rotate(float X, float Y, float Z);
+  void pan(int startX, int startY);
+  void orbit(int startX, int startY);
 
-  CameraT getCameraPos();
-  CameraR getCameraRot();
+  vector3D getCameraPos();
+  vector3D getCameraRot();
 
 };
 #endif
