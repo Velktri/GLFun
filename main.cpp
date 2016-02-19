@@ -22,10 +22,9 @@
 #define GLUT_WHEEL_UP      3
 #define GLUT_WHEEL_DOWN    4
 
-
 Model* mesh;
 Camera* userCamera;
-float _angle = 0.0f;
+float _angle = 2.0f;
 int x_pressed = 0;
 int y_pressed = 0;
 int buttonPressed = -1;
@@ -37,8 +36,8 @@ void handleKeypress(unsigned char key, int x, int y) {
 		userCamera->translate(0.0f, 1.0f, 0.0f);
 	} else if (key == 'q') {
 		userCamera->translate(0.0f, -1.0f, 0.0f);
-	} else if (key == 'a') {
-		userCamera->translate(1.0f, 0.0f, 0.0f);
+	} else if (key == 'f') {
+		userCamera->set();
 	} else if (key == 'd') {
 		userCamera->translate(-1.0f, 0.0f, 0.0f);
 	}
@@ -68,12 +67,11 @@ void processMouse(int button, int state, int x, int y) {
 	}
 }
 
-/* Handles all motion when a mouse buttun is pressed */
+/* Handles all motion when a mouse button is pressed */
 void processMotion(int x, int y) {
 	if (buttonPressed == GLUT_LEFT_MOUSE) {
 		int dx = x - x_pressed;
 		int dy = y - y_pressed;
-		cout << dx << " " << dy << endl;
 		userCamera->pan(dx, dy);
 	} else if (buttonPressed == GLUT_MIDDLE_MOUSE) {
 		int dx = x - x_pressed;
@@ -105,7 +103,23 @@ void handleResize(int w, int h) {
 				   200.0);                //The far z clipping coordinate
 }
 
-//Draws the 3D scene
+
+
+
+
+
+
+
+
+
+
+/* Draw functions for all windows */
+void drawApplication() {
+
+
+}
+
+/* Draws the 3D scene sub window */
 void drawScene() {
 	//Clear information from last draw
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -113,11 +127,15 @@ void drawScene() {
 	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 	glLoadIdentity(); //Reset the drawing perspective
 
+	/* Apply camera transforms */
 	vector3D userPos = userCamera->getCameraPos();
 	glTranslatef(userPos.x, userPos.y, userPos.z);
 
-	//CameraR userRot = userCamera->getCameraRot();
-	glRotatef(_angle, 0.0f, 0.0f, 1.0f);
+	/*  Apply camera rotations */
+	vector3D userRot = userCamera->getCameraRot();
+    glRotatef (userRot.x, 1.0f, 0.0f, 0.0f);
+    glRotatef (userRot.y, 0.0f, 1.0f, 0.0f);
+    glRotatef (userRot.z, 0.0f, 0.0f, 1.0f);
 
 	vector<vector3D> vertexArray = mesh->getVertices();
 
@@ -153,17 +171,32 @@ void drawScene() {
 	glutSwapBuffers(); //Send the 3D scene to the screen
 }
 
+
+
+
+
+
+
+
 void update(int value) {
-   /* _angle += 2.0f;
+    /*_angle += 2.0f;
     if (_angle > 360) {
         _angle -= 360;
-    }*/
+    }
     
-    glutPostRedisplay(); //Tell GLUT that the scene has changed
+    glutPostRedisplay(); //Tell GLUT that the scene has changed*/
     
     //Tell GLUT to call update again in 25 milliseconds
     glutTimerFunc(25, update, 0);
 }
+
+
+
+
+
+
+
+
 
 int main(int argc, char** argv) {
 	/* Check the args and open up the model */
@@ -184,11 +217,22 @@ int main(int argc, char** argv) {
 	//Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(1024, 720); //Set the window size
+	glutInitWindowSize(1024, 820); //Set the window size
+
+
 	
-	//Create the window
-	glutCreateWindow("My OBJ Viewer");
-	initRendering(); //Initialize rendering
+	/* Create the application window */
+	int appWindow = glutCreateWindow("My OBJ Viewer");
+	glutDisplayFunc(drawApplication);	
+
+	/* Handles resizing of the main window */
+	glutReshapeFunc(handleResize);
+
+
+
+	/* Create a sub window for the 3d scene */
+	glutCreateSubWindow(appWindow, 0, 100, 1024, 720);
+	initRendering();
 	glutDisplayFunc(drawScene);
 
 	/* Set handler functions keypresses and mouse */
