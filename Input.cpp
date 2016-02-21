@@ -16,6 +16,8 @@ void Input::handleKeypress(unsigned char key, int x, int y) {
 	/* Focus camera at a point */
 	if (key == 'f') {
 		userCamera->set();
+	} else if(key == 27) {
+		glutLeaveMainLoop();//exit(0);
 	}
 }
 

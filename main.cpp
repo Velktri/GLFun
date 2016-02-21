@@ -1,23 +1,18 @@
-#include "Model.h"
-#include "Camera.h"
-#include "Input.h"
-
-// GLEW
+/* GLEW */
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-//Include OpenGL header files, so that we can use OpenGL
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+#include "Model.h"
+#include "Camera.h"
+#include "Input.h"
+#include "Draw.h"
 
 
 Model* mesh;
 Camera* userCamera;
 Input* userInput;
+Draw* Scene;
+
 
 //Initializes 3D rendering
 void initRendering() {
@@ -37,144 +32,9 @@ void handleResize(int w, int h) {
 	glLoadIdentity(); //Reset the camera
 	gluPerspective(45.0,                  //The camera angle
 				   (double)w / (double)h, //The width-to-height ratio
-				   0.01,                   //The near z clipping coordinate
+				   0.1,                   //The near z clipping coordinate
 				   200.0);                //The far z clipping coordinate
 }
-
-
-
-
-
-/* Draw functions for all windows */
-void drawApplication() {
-
-
-}
-
-/* Draws the 3D scene sub window */
-void drawScene() {
-	//Clear information from last draw
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
-	glLoadIdentity(); //Reset the drawing perspective
-
-	/* Apply camera transforms */
-	vector3D userPos = userCamera->getCameraPos();
-	glTranslatef(userPos.x, userPos.y, userPos.z);
-
-	/*  Apply camera rotations */
-	vector3D userRot = userCamera->getCameraRot();
-    glRotatef (userRot.x, 1.0f, 0.0f, 0.0f);
-    glRotatef (userRot.y, 0.0f, 1.0f, 0.0f);
-    glRotatef (userRot.z, 0.0f, 0.0f, 1.0f);
-
-
-
-	/* Draw Floor */
-	glBegin(GL_QUADS);
-	glColor3f(0.4f, 0.4f, 0.6f);
-	glVertex3f(5.0f, 0.0f, 5.0f);
-	glVertex3f(5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, 5.0f);
-	glEnd();
-
-	/* Draw mesh */
-	vector<vector3D> vertexArray = mesh->getVertices();
-	/* Draw all the mesh's quads */
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glBegin(GL_QUADS);
-	vector<FaceData> quadArray = mesh->getQuads();
-	for (unsigned int i = 0; i < quadArray.size(); i++) {
-		int quadSize = quadArray.at(0).vertexPoint.size();
-		for (int j = 0; j < quadSize; ++j) {
-			glVertex3f(vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).x, 
-					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).y, 
-					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).z);
-		}
-	}
-	glEnd();
-
-	/* Draw all the mesh's triangles */
-	vector<FaceData> triArray = mesh->getTris();
-	glBegin(GL_TRIANGLES);
-	for (unsigned int i = 0; i < triArray.size(); i++) {
-		int triSize = triArray.at(0).vertexPoint.size();
-		for (int j = 0; j < triSize; ++j) {
-			glVertex3f(vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).x, 
-					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).y, 
-					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).z);
-		}
-	}
-	glEnd();
-	vertexArray.clear();
-	quadArray.clear();
-	triArray.clear();
-
-	glutSwapBuffers(); //Send the 3D scene to the screen
-}
-
-/* Top view */
-void drawSceneTop() {
-	//Clear information from last draw
-	glClearColor(0.1f, 0.4f, 0.4f, 1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//  Set Perspective
-    glMatrixMode (GL_PROJECTION);
-    glOrtho(-1, 1, -1, 1, -2, 2);
-	
-	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
-	glLoadIdentity(); //Reset the drawing perspective
-
-	glTranslatef(0.0f, 10.0f, 0.0f);
-	glRotatef(-90, 0.0f, 1.0f, 0.0f);
-
-	/* Draw Floor */
-	glBegin(GL_QUADS);
-	glColor3f(0.4f, 0.4f, 0.6f);
-	glVertex3f(5.0f, 0.0f, 5.0f);
-	glVertex3f(5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, 5.0f);
-	glEnd();
-
-	vector<vector3D> vertexArray = mesh->getVertices();
-	/* Draw all the mesh's quads */
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glBegin(GL_QUADS);
-	vector<FaceData> quadArray = mesh->getQuads();
-	for (unsigned int i = 0; i < quadArray.size(); i++) {
-		int quadSize = quadArray.at(0).vertexPoint.size();
-		for (int j = 0; j < quadSize; ++j) {
-			glVertex3f(vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).x, 
-					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).y, 
-					   vertexArray.at(quadArray.at(i).vertexPoint.at(j) - 1).z);
-		}
-	}
-	glEnd();
-
-	/* Draw all the mesh's triangles */
-	vector<FaceData> triArray = mesh->getTris();
-	glBegin(GL_TRIANGLES);
-	for (unsigned int i = 0; i < triArray.size(); i++) {
-		int triSize = triArray.at(0).vertexPoint.size();
-		for (int j = 0; j < triSize; ++j) {
-			glVertex3f(vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).x, 
-					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).y, 
-					   vertexArray.at(triArray.at(i).vertexPoint.at(j) - 1).z);
-		}
-	}
-	glEnd();
-	vertexArray.clear();
-	quadArray.clear();
-	triArray.clear();
-
-	glutSwapBuffers(); //Send the 3D scene to the screen
-}
-
-
 
 
 
@@ -193,6 +53,20 @@ void update(int value) {
 
 
 
+
+
+/* Drawing Handlers */
+void drawApp() {
+	Scene->drawApplication();
+}
+
+void drawScene() {
+	Scene->drawScene();
+}
+
+void drawSceneTop() {
+	Scene->drawSceneTop();
+}
 
 
 /* Input Handlers */
@@ -215,7 +89,7 @@ int main(int argc, char** argv) {
 		std::string fileName(argv[1]);
 		mesh = new Model(fileName);
 	} else {
-		cout << "Please enter an .obj file to be drawn." << endl;
+		std::cout << "Please enter an .obj file to be drawn." << std::endl;
 		exit(0);
 	}
 
@@ -226,6 +100,9 @@ int main(int argc, char** argv) {
 
 	/* User's Inputs */
 	userInput = new Input(userCamera);
+
+	/* Create the Scene */
+	Scene = new Draw(userCamera, mesh);
 
 
 	/* Initialize GLUT */
@@ -239,15 +116,17 @@ int main(int argc, char** argv) {
 	/* Create the application window */
 	int appWindow = glutCreateWindow("My OBJ Viewer");
 	initRendering();
-	glutDisplayFunc(drawApplication);	
+	glutDisplayFunc(drawApp);
 
 	/* Handles resizing of the main window */
 	glutReshapeFunc(handleResize);
 
 
 
+
 	/* Create a sub window for the 3d scene */
 	glutCreateSubWindow(appWindow, 0, 100, 1024, 720);
+	initRendering();
 	glutDisplayFunc(drawScene);
 
 	/* Set handler functions keypresses and mouse */
@@ -262,8 +141,9 @@ int main(int argc, char** argv) {
 
 
 
-	/* Top view window */
+	/* Top view sub window */
 	glutCreateSubWindow(appWindow, 1024, 100, 1024, 720);
+	initRendering();
 	glutDisplayFunc(drawSceneTop);
 
 	/* Set handler functions keypresses and mouse */
@@ -278,9 +158,8 @@ int main(int argc, char** argv) {
 
 	/* Initialize GLEW */
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
-	{
-	    cout << "Failed to initialize GLEW" << endl;
+	if (glewInit() != GLEW_OK) {
+	    std::cout << "Failed to initialize GLEW" << std::endl;
 	    return -1;
 	}
 

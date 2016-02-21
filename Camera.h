@@ -7,8 +7,6 @@
 #define CAMERA_H
 #include <stdlib.h>
 #include "utils.h"
-#include <iostream>
-using namespace std;
 
 struct quaternion {
 	float w;

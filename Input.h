@@ -6,9 +6,16 @@
 
 #ifndef INPUT_H
 #define INPUT_H
-#include <stdlib.h>
 #include "Camera.h"
-using namespace std;
+ 
+/* GLUT */
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/freeglut.h>
+#endif
+
 
 #define MOUSE_BUTTON_PRESSED    0
 #define MOUSE_BUTTON_UNPRESSED  1
@@ -26,7 +33,7 @@ private:
 	int buttonPressed;
 	Camera* userCamera;
 public:
-	Input(Camera* userCamera);
+	Input(Camera* Cam);
 	~Input();
 
 	void handleKeypress(unsigned char key, int x, int y);

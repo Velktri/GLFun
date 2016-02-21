@@ -50,8 +50,8 @@ void Camera::pan(int deltaX, int deltaY) {
 }
 
 void Camera::orbit(int deltaX, int deltaY) {
-    float focusDist = (abs(focusT.z) / 90) / 1.5;
-	float angle = deltaX / 1.5;
+    float focusDist = abs(focusT.z) / 180;
+	float angle = deltaX / 2;
 
 	/* Orbit horizontally */
 	if (deltaX > 0) {

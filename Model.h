@@ -11,37 +11,35 @@
 #include <stdlib.h>
 #include <vector>
 #include <sstream>
-#include <iostream>
 #include "utils.h"
-using namespace std;
 
 struct FaceData {
-  vector<int> vertexPoint;
-  vector<int> vertexTexture;
-  vector<int> vertexNormal;
+  std::vector<int> vertexPoint;
+  std::vector<int> vertexTexture;
+  std::vector<int> vertexNormal;
 };
 
 class Model {
 
 public:
-  Model(string fileName); 
+  Model(std::string fileName); 
   ~Model();
 
-  string meshName;
-  vector<vector3D> vertexArray;
-  vector<FaceData> quadArray;
-  vector<FaceData> triArray;
+  std::string meshName;
+  std::vector<vector3D> vertexArray;
+  std::vector<FaceData> quadArray;
+  std::vector<FaceData> triArray;
 
   void myPrint();
-  vector<vector3D> getVertices();
-  vector<FaceData> getQuads();
-  vector<FaceData> getTris();
+  std::vector<vector3D> getVertices();
+  std::vector<FaceData> getQuads();
+  std::vector<FaceData> getTris();
 
 private:
-  void parseMesh(string fileName);
-  string parseName(string line);
-  vector3D parseVertex(string line);
-  FaceData parseFace(vector<string> elements);
-  vector<string> split(const string &s, char delim);
+  void parseMesh(std::string fileName);
+  std::string parseName(std::string line);
+  vector3D parseVertex(std::string line);
+  FaceData parseFace(std::vector<std::string> elements);
+  std::vector<std::string> split(const std::string &s, char delim);
 };
 #endif
