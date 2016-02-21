@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall
 PROG = MyProg
-SRCS = main.cpp Model.cpp Camera.cpp
+SRCS = main.cpp Model.cpp Camera.cpp Input.cpp
 
 ifeq ($(shell uname),Darwin)
 	LIBS = -framework OpenGL -framework GLUT

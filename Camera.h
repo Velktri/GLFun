@@ -25,7 +25,6 @@ private:
 	quaternion quat;
 
 	float getDistance();
-	void normalize(quaternion* Q, float magnitude);
 
 public:
   Camera(float transX, float transY, float transZ,
