@@ -108,8 +108,8 @@ int main(int argc, char** argv) {
 	/* Initialize GLUT */
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowPosition(200, 200);
-	glutInitWindowSize(2048, 820); //Set the window size
+	glutInitWindowPosition(200, 100);
+	glutInitWindowSize(1024, 820); //Set the window size
 
 
 	
@@ -141,20 +141,20 @@ int main(int argc, char** argv) {
 
 
 
-	/* Top view sub window */
+	/* Top view sub window 
 	glutCreateSubWindow(appWindow, 1024, 100, 1024, 720);
 	initRendering();
 	glutDisplayFunc(drawSceneTop);
 
-	/* Set handler functions keypresses and mouse */
+	// Set handler functions keypresses and mouse 
 	glutKeyboardFunc(Keypress);
 	glutMouseFunc(Mouse);
 	glutMotionFunc(Motion);
 
-	/* Handles resizing of the window */
+	// Handles resizing of the window 
 	glutReshapeFunc(handleResize);
 	
-	glutTimerFunc(25, update, 0); //Add a timer	
+	glutTimerFunc(25, update, 0); //Add a timer	*/
 
 	/* Initialize GLEW */
 	glewExperimental = GL_TRUE;

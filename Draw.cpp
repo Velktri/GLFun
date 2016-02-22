@@ -34,13 +34,7 @@ void Draw::drawScene() {
 
 
 	/* Draw Floor */
-	glBegin(GL_QUADS);
-	glColor3f(0.4f, 0.4f, 0.6f);
-	glVertex3f(5.0f, 0.0f, 5.0f);
-	glVertex3f(5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, 5.0f);
-	glEnd();
+	drawGrid(10, 1, 1);
 
 	/* Draw mesh */
 	std::vector<vector3D> vertexArray = mesh->getVertices();
@@ -95,13 +89,7 @@ void Draw::drawSceneTop() {
 	glRotatef(-90, 0.0f, 1.0f, 0.0f);
 
 	/* Draw Floor */
-	glBegin(GL_QUADS);
-	glColor3f(0.4f, 0.4f, 0.6f);
-	glVertex3f(5.0f, 0.0f, 5.0f);
-	glVertex3f(5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, -5.0f);
-	glVertex3f(-5.0f, 0.0f, 5.0f);
-	glEnd();
+	drawGrid(10, 1, 1);
 
 	std::vector<vector3D> vertexArray = mesh->getVertices();
 	/* Draw all the mesh's quads */
@@ -135,4 +123,87 @@ void Draw::drawSceneTop() {
 	triArray.clear();
 
 	glutSwapBuffers(); //Send the 3D scene to the screen
+}
+
+void Draw::drawGrid(int gridLines, int gridSpacing, int xyzFLAG) {
+	int	colorY = 0;
+	int	colorX = 0;
+	int	colorZ = 0;
+
+	glBegin(GL_LINES);
+	if (xyzFLAG & 1) {
+		/* XZ */
+		colorZ = 1;
+		colorX = 1;
+
+		for (int i = -gridLines; i <= gridLines; i++) {
+			/* X lines */
+			if (i != 0) {	
+				glVertex3f(i, 0.0f, -gridLines);
+				glVertex3f(i, 0.0f, gridLines);
+
+				/* Z lines */
+				glVertex3f(-gridLines, 0.0f, gridSpacing * i);
+				glVertex3f(gridLines, 0.0f, gridSpacing * i);
+			}
+		}
+	}
+
+	if (xyzFLAG & 2) {
+		/* YX */
+		colorY = 1;
+		colorX = 1;
+
+		for (int i = -gridLines; i <= gridLines; i++) {
+			/* Y lines */
+			if (i != 0) {
+				glVertex3f(i, -gridLines, 0.0f);
+				glVertex3f(i, gridLines, 0.0f);
+
+				/* X lines */
+				glVertex3f(-gridLines, gridSpacing * i, 0.0f);
+				glVertex3f(gridLines, gridSpacing * i, 0.0f);
+			}
+		}
+	}
+
+	if (xyzFLAG & 4) {
+		/* YZ */
+		colorY = 1;
+		colorZ = 1;
+
+		for (int i = -gridLines; i <= gridLines; i++) {
+			/* Y lines */
+			if (i != 0) {	
+				glVertex3f(0.0f, i, -gridLines);
+				glVertex3f(0.0f, i, gridLines);
+
+				/* Z lines */
+				glVertex3f(0.0f, -gridLines, gridSpacing * i);
+				glVertex3f(0.0f, gridLines, gridSpacing * i);
+			}
+		}
+	}
+
+	/* X */
+	if (colorX) {
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-gridLines, 0.0f, 0.0f);
+		glVertex3f(gridLines, 0.0f, 0.0f);
+	}
+
+	/* Y */
+	if (colorY) {
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, -gridLines, 0.0f);
+		glVertex3f(0.0f, gridLines, 0.0f);
+	}
+
+	/* Z */
+	if (colorZ) {
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 0.0f, -gridLines);
+		glVertex3f(0.0f, 0.0f, gridLines);
+	}
+	glEnd();
 }

@@ -26,16 +26,19 @@ private:
 	Model* mesh;
 
 public:
-Draw(Camera* userCamera, Model* mod);
-~Draw();
+	Draw(Camera* userCamera, Model* mod);
+	~Draw();
 
-/* Draws the full window */
-void drawApplication();
+	/* Draws the floor grid */
+	void drawGrid(int gridLines, int gridSpacing, int xyzFLAG);
 
-/* Draws the 3D scene sub window */
-void drawScene();
+	/* Draws the full window */
+	void drawApplication();
 
-/* Draws the top view window */
-void drawSceneTop();
+	/* Draws the 3D scene sub window */
+	void drawScene();
+
+	/* Draws the top view window */
+	void drawSceneTop();
 };
 #endif
