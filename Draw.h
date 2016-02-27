@@ -23,14 +23,17 @@
 class Draw {
 private:
 	Camera* userCamera;
+	Camera* userCameraTop;
 	Model* mesh;
 
+	void drawMesh(float zoom);
+
 public:
-	Draw(Camera* userCamera, Model* mod);
+	Draw(Camera* userCamera, Camera* CameraTop, Model* mod);
 	~Draw();
 
 	/* Draws the floor grid */
-	void drawGrid(int gridLines, int gridSpacing, int xyzFLAG);
+	void drawGrid(int gridLines, int gridSpacing, int xyzFLAG, float zoom);
 
 	/* Draws the full window */
 	void drawApplication();
@@ -40,5 +43,9 @@ public:
 
 	/* Draws the top view window */
 	void drawSceneTop();
+	void drawSceneSide();
+	void drawSceneFront();
+
+	void drawCube();
 };
 #endif

@@ -32,12 +32,20 @@ private:
 	int y_pressed;
 	int buttonPressed;
 	Camera* userCamera;
+	Camera* userCameraTop;
+
 public:
-	Input(Camera* Cam);
+	Input(Camera* Cam, Camera* CameraTop);
 	~Input();
 
+	/* Handles all key presses */
 	void handleKeypress(unsigned char key, int x, int y);
+
+	/*  Handles all mouse functionality */
 	void processMouse(int button, int state, int x, int y);
+
+	/* Handles all motion when a mouse button is pressed */
 	void processMotion(int x, int y);
+
 };
 #endif

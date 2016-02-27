@@ -16,6 +16,8 @@ Camera::Camera(float transX, float transY, float transZ,
 	focusT.x = focusX;
 	focusT.y = focusY;
 	focusT.z = focusZ;
+
+	zoom = 0;
 }
 
 Camera::~Camera() {
@@ -41,13 +43,36 @@ void Camera::set() {
 	coodR.x = 0.0f;
 	coodR.y = 0.0f;
 	coodR.z = 0.0f;
+}
 
+float Camera::getZoom() {
+	return zoom;
+}
+
+void Camera::ZoomInOut(float x) {
+	zoom += x;
 }
 
 void Camera::pan(int deltaX, int deltaY) {
 	coodT.x += (deltaX * 0.007f);
 	coodT.y += (deltaY * -0.007f);
 }
+
+void Camera::panTop(int deltaX, int deltaY) {
+	coodT.x += (deltaX * 0.001f);
+	coodT.z += (deltaY * -0.001f);
+}
+
+void Camera::panSide(int deltaX, int deltaY) {
+	coodT.z += (deltaX * -0.001f);
+	coodT.y += (deltaY * -0.001f);
+}
+
+void Camera::panFront(int deltaX, int deltaY) {
+	coodT.x += (deltaX * 0.001f);
+	coodT.y += (deltaY * -0.001f);
+}
+
 
 void Camera::orbit(int deltaX, int deltaY) {
     float focusDist = abs(focusT.z) / 180;
